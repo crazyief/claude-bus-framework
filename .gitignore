@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Node
+node_modules/
+.npm
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Framework runtime
+.claude-bus/events.jsonl
+.claude-bus/events-secure.jsonl
+.claude-bus/pm-state.json
+
+# Keep gate records but ignore temp files
+.claude-bus/gates/**/temp-*
+
+# Build outputs
+dist/
+build/
+*.egg-info/
