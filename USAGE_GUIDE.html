@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Bus Framework - Usage Guide</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-code: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            color: var(--text-primary);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .section h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h2 .icon {
+            font-size: 1.5rem;
+        }
+
+        .section h3 {
+            color: var(--secondary);
+            font-size: 1.3rem;
+            margin: 25px 0 15px 0;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #333 0%, #24292e 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid #555;
+        }
+
+        .github-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .github-link svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        pre {
+            background: var(--bg-code);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95rem;
+            color: #e2e8f0;
+        }
+
+        .inline-code {
+            background: var(--bg-code);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .step-list li {
+            counter-increment: step-counter;
+            padding: 20px 20px 20px 70px;
+            position: relative;
+            margin-bottom: 15px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .step-list li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 35px;
+            height: 35px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .callout {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .callout-info {
+            background: rgba(99, 102, 241, 0.15);
+            border-left: 4px solid var(--primary);
+        }
+
+        .callout-success {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid var(--secondary);
+        }
+
+        .callout-warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid var(--accent);
+        }
+
+        .callout-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-code);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        tr:hover td {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .workflow-diagram {
+            background: var(--bg-code);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            font-family: monospace;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .toc {
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .toc h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            padding: 8px 0;
+        }
+
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: var(--secondary);
+        }
+
+        .screenshot {
+            background: var(--bg-code);
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 20px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .step-list li {
+                padding-left: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚌 Claude Bus Framework</h1>
+            <p>Multi-Agent Orchestration for Claude Code CLI</p>
+            <span class="badge">Version 1.0</span>
+        </header>
+
+        <div class="toc">
+            <h3>📑 Table of Contents</h3>
+            <ul>
+                <li><a href="#github-repo">1. GitHub Repository</a></li>
+                <li><a href="#prerequisites">2. Prerequisites</a></li>
+                <li><a href="#upload-framework">3. Upload Framework to GitHub</a></li>
+                <li><a href="#template-repo">4. Make it a Template Repository</a></li>
+                <li><a href="#use-new-computer">5. Use from Another Computer</a></li>
+                <li><a href="#use-local">6. Use in Local Folder</a></li>
+                <li><a href="#commands">7. Available Commands</a></li>
+                <li><a href="#workflow">8. Workflow Overview</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1: GitHub Repository -->
+        <section class="section" id="github-repo">
+            <h2><span class="icon">📦</span> GitHub Repository</h2>
+            <p>Your Claude Bus Framework is hosted at:</p>
+            <p style="margin: 25px 0;">
+                <a href="https://github.com/crazyief/claude-bus-framework" target="_blank" class="github-link">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    github.com/crazyief/claude-bus-framework
+                </a>
+            </p>
+        </section>
+
+        <!-- Section 2: Prerequisites -->
+        <section class="section" id="prerequisites">
+            <h2><span class="icon">⚙️</span> Prerequisites</h2>
+
+            <h3>Required Tools</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tool</th>
+                        <th>Purpose</th>
+                        <th>Installation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code class="inline-code">git</code></td>
+                        <td>Version control</td>
+                        <td>Usually pre-installed</td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">gh</code></td>
+                        <td>GitHub CLI</td>
+                        <td><code class="inline-code">sudo apt install gh</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">claude</code></td>
+                        <td>Claude Code CLI</td>
+                        <td><code class="inline-code">npm install -g @anthropic-ai/claude-code</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">python3</code></td>
+                        <td>Gate scripts</td>
+                        <td>Usually pre-installed</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>GitHub CLI Authentication</h3>
+            <pre><code># Login to GitHub (one-time setup)
+gh auth login
+
+# Follow prompts:
+# 1. GitHub.com
+# 2. HTTPS
+# 3. Login with web browser → Yes
+# 4. Copy one-time code → Paste in browser → Authorize
+
+# Verify authentication
+gh auth status</code></pre>
+        </section>
+
+        <!-- Section 3: Upload Framework to GitHub -->
+        <section class="section" id="upload-framework">
+            <h2><span class="icon">⬆️</span> Upload Framework to GitHub</h2>
+            <p>If you have the framework locally and want to push it to a new GitHub repository:</p>
+
+            <ol class="step-list">
+                <li>
+                    <strong>Navigate to your framework folder</strong>
+                    <pre><code>cd /path/to/claude-bus-framework</code></pre>
+                </li>
+                <li>
+                    <strong>Initialize Git (if not already done)</strong>
+                    <pre><code>git init
+git add .
+git commit -m "Initial Claude Bus Framework v1.0"</code></pre>
+                </li>
+                <li>
+                    <strong>Create GitHub repo and push (all in one command!)</strong>
+                    <pre><code>gh repo create claude-bus-framework --public --source=. --push --description "Multi-agent orchestration framework for Claude Code CLI"</code></pre>
+                </li>
+            </ol>
+
+            <div class="callout callout-info">
+                <div class="callout-title">💡 Command Breakdown</div>
+                <table>
+                    <tr><td><code class="inline-code">gh repo create</code></td><td>Create a new repository</td></tr>
+                    <tr><td><code class="inline-code">claude-bus-framework</code></td><td>Repository name</td></tr>
+                    <tr><td><code class="inline-code">--public</code></td><td>Make it public (use <code class="inline-code">--private</code> for private)</td></tr>
+                    <tr><td><code class="inline-code">--source=.</code></td><td>Use current folder as source</td></tr>
+                    <tr><td><code class="inline-code">--push</code></td><td>Push immediately after creating</td></tr>
+                    <tr><td><code class="inline-code">--description "..."</code></td><td>Repository description</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 4: Template Repository -->
+        <section class="section" id="template-repo">
+            <h2><span class="icon">📋</span> Make it a Template Repository</h2>
+            <p>Template repositories allow others (and yourself) to create new repos with the same structure instantly.</p>
+
+            <h3>How to Enable Template</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Go to your repository settings</strong>
+                    <pre><code>https://github.com/crazyief/claude-bus-framework/settings</code></pre>
+                </li>
+                <li>
+                    <strong>Scroll down to find "Template repository"</strong>
+                    <p>It's in the General settings section, near the top.</p>
+                </li>
+                <li>
+                    <strong>Check the box ✅ "Template repository"</strong>
+                    <p>The setting saves automatically.</p>
+                </li>
+            </ol>
+
+            <h3>How to Verify It's a Template</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Visit your repository page</strong>
+                    <pre><code>https://github.com/crazyief/claude-bus-framework</code></pre>
+                </li>
+                <li>
+                    <strong>Look for the green "Use this template" button</strong>
+                    <p>If you see this button (instead of just "Code"), it's a template!</p>
+                </li>
+                <li>
+                    <strong>Or check via CLI</strong>
+                    <pre><code>gh repo view crazyief/claude-bus-framework --json isTemplate
+# Output: {"isTemplate":true}</code></pre>
+                </li>
+            </ol>
+
+            <div class="screenshot">
+                📸 Screenshot placeholder: GitHub repo page showing "Use this template" button
+            </div>
+        </section>
+
+        <!-- Section 5: Use from Another Computer -->
+        <section class="section" id="use-new-computer">
+            <h2><span class="icon">💻</span> Use from Another Computer</h2>
+            <p>Starting fresh on a new machine? Here's how to get the framework running:</p>
+
+            <h3>Step 1: Install Prerequisites</h3>
+            <pre><code># Install GitHub CLI
+sudo apt update && sudo apt install -y gh
+
+# Install Claude Code CLI
+npm install -g @anthropic-ai/claude-code
+
+# Authenticate with GitHub
+gh auth login</code></pre>
+
+            <h3>Step 2: Create Project from Template</h3>
+            <pre><code># Create new project from template (recommended)
+gh repo create my-awesome-project \
+    --template crazyief/claude-bus-framework \
+    --private \
+    --clone
+
+# Enter the project
+cd my-awesome-project</code></pre>
+
+            <div class="callout callout-success">
+                <div class="callout-title">✅ What This Does</div>
+                <ul>
+                    <li>Creates a new private repo called <code class="inline-code">my-awesome-project</code></li>
+                    <li>Copies all files from the template</li>
+                    <li>Clones it to your local machine</li>
+                    <li>You own the new repo completely (not a fork)</li>
+                </ul>
+            </div>
+
+            <h3>Step 3: Start Claude Code</h3>
+            <pre><code># Start Claude - framework auto-loads!
+claude
+
+# Run interactive setup
+/setup
+
+# Or start your first stage directly
+/new-stage 1 "My First Feature"</code></pre>
+
+            <h3>Alternative: Clone Without Template</h3>
+            <p>If template isn't enabled, you can still clone directly:</p>
+            <pre><code># Clone the framework
+git clone https://github.com/crazyief/claude-bus-framework.git my-project
+cd my-project
+
+# Remove original git history and start fresh
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit from Claude Bus Framework"
+
+# Start Claude
+claude</code></pre>
+        </section>
+
+        <!-- Section 6: Use in Local Folder -->
+        <section class="section" id="use-local">
+            <h2><span class="icon">📁</span> Use in Local Folder (Same Computer)</h2>
+            <p>Want to start a new project on the same computer where you already have the framework?</p>
+
+            <h3>Option A: Use Template via GitHub (Recommended)</h3>
+            <pre><code># Create new project from your template
+gh repo create another-project \
+    --template crazyief/claude-bus-framework \
+    --private \
+    --clone
+
+cd another-project
+claude</code></pre>
+
+            <h3>Option B: Copy Folder Locally</h3>
+            <pre><code># Copy framework to new location
+cp -r /path/to/claude-bus-framework /path/to/my-new-project
+
+# Go to new project
+cd /path/to/my-new-project
+
+# Reset git (start fresh history)
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit"
+
+# Start Claude
+claude</code></pre>
+
+            <h3>Option C: Use degit (No Git History)</h3>
+            <pre><code># Install degit if needed
+npm install -g degit
+
+# Copy without git history
+npx degit crazyief/claude-bus-framework my-new-project
+
+cd my-new-project
+git init
+claude</code></pre>
+
+            <div class="callout callout-warning">
+                <div class="callout-title">⚠️ Important</div>
+                <p>Always start with a fresh git history for new projects. Don't keep the framework's commit history in your actual project.</p>
+            </div>
+        </section>
+
+        <!-- Section 7: Available Commands -->
+        <section class="section" id="commands">
+            <h2><span class="icon">⌨️</span> Available Slash Commands</h2>
+            <p>Once Claude is running with the framework, these commands are available:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code class="inline-code">/setup</code></td>
+                        <td>Interactive project configuration</td>
+                        <td><code class="inline-code">/setup</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">/status</code></td>
+                        <td>Show current progress and alerts</td>
+                        <td><code class="inline-code">/status</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">/gate-check</code></td>
+                        <td>Run gate validation</td>
+                        <td><code class="inline-code">/gate-check 1 2 output</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">/new-stage</code></td>
+                        <td>Initialize a new development stage</td>
+                        <td><code class="inline-code">/new-stage 1 "User Auth"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code class="inline-code">/team-meeting</code></td>
+                        <td>Invoke all 6 agents for review</td>
+                        <td><code class="inline-code">/team-meeting "Architecture Review"</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section 8: Workflow Overview -->
+        <section class="section" id="workflow">
+            <h2><span class="icon">🔄</span> Workflow Overview</h2>
+
+            <h3>6 Specialized Agents</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>🎯 PM-Architect</td><td>Planning, coordination, phase gates</td></tr>
+                    <tr><td>⚙️ Backend</td><td>API, database, services</td></tr>
+                    <tr><td>🎨 Frontend</td><td>UI, components, stores</td></tr>
+                    <tr><td>🧪 QA</td><td>Testing, code review, coverage</td></tr>
+                    <tr><td>📚 Document-RAG</td><td>Documentation, RAG pipelines</td></tr>
+                    <tr><td>🧠 Super-AI</td><td>Complex problems, architecture review</td></tr>
+                </tbody>
+            </table>
+
+            <h3>5-Phase Workflow (Per Stage)</h3>
+            <div class="workflow-diagram">
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│  Phase 1    │───▶│  Phase 2    │───▶│  Phase 3    │───▶│  Phase 4    │───▶│  Phase 5    │
+│  Planning   │    │ Development │    │   Review    │    │ Integration │    │  Approval   │
+│             │    │             │    │             │    │             │    │             │
+│ • Require-  │    │ • Write     │    │ • Code      │    │ • E2E tests │    │ • User      │
+│   ments     │    │   code      │    │   review    │    │ • Real      │    │   testing   │
+│ • API       │    │ • Unit      │    │ • Mocked    │    │   backend   │    │ • Sign-off  │
+│   contracts │    │   tests     │    │   tests     │    │ • Perf      │    │             │
+│ • Arch      │    │ • Git       │    │ • Coverage  │    │   tests     │    │             │
+│   design    │    │   commit    │    │   ≥70%      │    │             │    │             │
+└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘
+       │                  │                  │                  │                  │
+       ▼                  ▼                  ▼                  ▼                  ▼
+   [Gate 1]          [Gate 2]           [Gate 3]          [Gate 4]          [Gate 5]
+   Input/Output      Input/Output       Input/Output      Input/Output      Input/Output
+            </div>
+
+            <h3>Gate Protocol (Binary Voting)</h3>
+            <div class="callout callout-info">
+                <div class="callout-title">🗳️ Gate Rules</div>
+                <ul>
+                    <li><strong>Binary Only:</strong> PASS or BLOCK (no "conditional")</li>
+                    <li><strong>Unanimous:</strong> All 6 agents must PASS</li>
+                    <li><strong>2 Loops Minimum:</strong> Even if Loop 1 passes, Loop 2 required</li>
+                    <li><strong>3 Loops Maximum:</strong> Escalate to user after 3 failures</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Quick Start Summary -->
+        <section class="section">
+            <h2><span class="icon">🚀</span> Quick Start Summary</h2>
+            <pre><code># 1. Create new project from template
+gh repo create my-project --template crazyief/claude-bus-framework --private --clone
+
+# 2. Enter project folder
+cd my-project
+
+# 3. Start Claude (framework auto-loads!)
+claude
+
+# 4. Configure your project
+/setup
+
+# 5. Start your first stage
+/new-stage 1 "My First Feature"
+
+# 6. Check status anytime
+/status
+
+# 7. Run gate validation
+/gate-check 1 2 output</code></pre>
+        </section>
+
+        <footer>
+            <p>Claude Bus Framework v1.0</p>
+            <p style="margin-top: 10px;">
+                <a href="https://github.com/crazyief/claude-bus-framework" style="color: var(--primary);">
+                    GitHub Repository
+                </a>
+            </p>
+            <p style="margin-top: 20px; font-size: 0.9rem;">
+                Built for multi-agent software development with Claude Code CLI
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
